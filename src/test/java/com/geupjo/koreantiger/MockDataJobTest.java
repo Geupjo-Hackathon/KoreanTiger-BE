@@ -152,6 +152,23 @@ class MockDataJobTest {
 
     @Test
     @Commit
+    void mockCodeBoxJob() {
+        CodeBox codeBox = new CodeBox("더하기",
+                "public class Main {\n" +
+                "    public static void main(String[] args) {\n" +
+                "        int a = 1;\n" +
+                "        int b = 2;\n" +
+                "        System.out.println(a + b);\n" +
+                "    }\n" +
+                "}",
+                268L
+        );
+        CodeBox saved = codeBoxRepository.save(codeBox);
+        System.out.println(saved.getId());
+    }
+
+    @Test
+    @Commit
     void mockDetailedAnalysisJob() {
         // 300 개
         IntStream.range(203, 503)
@@ -238,59 +255,59 @@ class MockDataJobTest {
         LocalDateTime dateTime = LocalDateTime.now();
         LocalDate date = LocalDate.now();
 
-                    List<EducationHistory> educationHistories = List.of(
-                            new EducationHistory(true, 0,
-                                    getEpochMilli(dateTime.with(DayOfWeek.SUNDAY))
-                                    , totalLearningTime,
-                                    getGrade(totalLearningTime),
-                                    getEpochMilli(date.with(DayOfWeek.SUNDAY)
-                                            .minusWeeks(5)), memberId),
+        List<EducationHistory> educationHistories = List.of(
+                new EducationHistory(true, 0,
+                        getEpochMilli(dateTime.with(DayOfWeek.SUNDAY))
+                        , totalLearningTime,
+                        getGrade(totalLearningTime),
+                        getEpochMilli(date.with(DayOfWeek.SUNDAY)
+                                .minusWeeks(5)), memberId),
 
-                            new EducationHistory(true, 0,
-                                    getEpochMilli(dateTime.with(DayOfWeek.MONDAY))
-                                    , totalLearningTime1,
-                                    getGrade(totalLearningTime1),
-                                    getEpochMilli(date.with(DayOfWeek.MONDAY)
-                                            .minusWeeks(5)), memberId),
+                new EducationHistory(true, 0,
+                        getEpochMilli(dateTime.with(DayOfWeek.MONDAY))
+                        , totalLearningTime1,
+                        getGrade(totalLearningTime1),
+                        getEpochMilli(date.with(DayOfWeek.MONDAY)
+                                .minusWeeks(5)), memberId),
 
-                            new EducationHistory(true, 0,
-                                    getEpochMilli(dateTime.with(DayOfWeek.TUESDAY))
-                                    , totalLearningTime2,
-                                    getGrade(totalLearningTime2),
-                                    getEpochMilli(date.with(DayOfWeek.TUESDAY)
-                                            .minusWeeks(5)), memberId),
+                new EducationHistory(true, 0,
+                        getEpochMilli(dateTime.with(DayOfWeek.TUESDAY))
+                        , totalLearningTime2,
+                        getGrade(totalLearningTime2),
+                        getEpochMilli(date.with(DayOfWeek.TUESDAY)
+                                .minusWeeks(5)), memberId),
 
-                            new EducationHistory(true, 0,
-                                    getEpochMilli(dateTime.with(DayOfWeek.WEDNESDAY))
-                                    , totalLearningTime3,
-                                    getGrade(totalLearningTime3),
-                                    getEpochMilli(date.with(DayOfWeek.WEDNESDAY)
-                                            .minusWeeks(5)), memberId),
+                new EducationHistory(true, 0,
+                        getEpochMilli(dateTime.with(DayOfWeek.WEDNESDAY))
+                        , totalLearningTime3,
+                        getGrade(totalLearningTime3),
+                        getEpochMilli(date.with(DayOfWeek.WEDNESDAY)
+                                .minusWeeks(5)), memberId),
 
-                            new EducationHistory(true, 0,
-                                    getEpochMilli(dateTime.with(DayOfWeek.THURSDAY))
-                                    , totalLearningTime4,
-                                    getGrade(totalLearningTime4),
-                                    getEpochMilli(date.with(DayOfWeek.THURSDAY)
-                                            .minusWeeks(5)), memberId),
+                new EducationHistory(true, 0,
+                        getEpochMilli(dateTime.with(DayOfWeek.THURSDAY))
+                        , totalLearningTime4,
+                        getGrade(totalLearningTime4),
+                        getEpochMilli(date.with(DayOfWeek.THURSDAY)
+                                .minusWeeks(5)), memberId),
 
-                            new EducationHistory(true, 0,
-                                    getEpochMilli(dateTime.with(DayOfWeek.FRIDAY))
-                                    , totalLearningTime5,
-                                    getGrade(totalLearningTime5),
-                                    getEpochMilli(date.with(DayOfWeek.FRIDAY)
-                                            .minusWeeks(5)), memberId),
+                new EducationHistory(true, 0,
+                        getEpochMilli(dateTime.with(DayOfWeek.FRIDAY))
+                        , totalLearningTime5,
+                        getGrade(totalLearningTime5),
+                        getEpochMilli(date.with(DayOfWeek.FRIDAY)
+                                .minusWeeks(5)), memberId),
 
-                            new EducationHistory(true, 0,
-                                    getEpochMilli(dateTime.with(DayOfWeek.SATURDAY))
-                                    , totalLearningTime6,
-                                    getGrade(totalLearningTime6),
-                                    getEpochMilli(date.with(DayOfWeek.SATURDAY)
-                                            .minusWeeks(5)), memberId)
-                    );
+                new EducationHistory(true, 0,
+                        getEpochMilli(dateTime.with(DayOfWeek.SATURDAY))
+                        , totalLearningTime6,
+                        getGrade(totalLearningTime6),
+                        getEpochMilli(date.with(DayOfWeek.SATURDAY)
+                                .minusWeeks(5)), memberId)
+        );
 
-                    List<EducationHistory> saved = educationHistoryRepository.saveAll(educationHistories);
-                    System.out.println(saved.size());
+        List<EducationHistory> saved = educationHistoryRepository.saveAll(educationHistories);
+        System.out.println(saved.size());
 //                });
     }
 
