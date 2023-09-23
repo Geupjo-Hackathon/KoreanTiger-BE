@@ -9,10 +9,12 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jdk.jfr.Description;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Table(schema = "geupjo")
 @Entity
+@NoArgsConstructor
 public class Lecture extends BaseEntity {
 
     @Description("강의 이름")
@@ -31,6 +33,13 @@ public class Lecture extends BaseEntity {
 
     @Column
     private long memberId;
+
+    public Lecture(String name, String code, int progress, long memberId) {
+        this.name = name;
+        this.code = code;
+        this.progress = progress;
+        this.memberId = memberId;
+    }
 
     public boolean isComplete() {
         return this.progress == 100;

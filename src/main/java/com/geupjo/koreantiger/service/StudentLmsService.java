@@ -56,7 +56,7 @@ public class StudentLmsService {
     public RankingBoardResponseDto getRankingBoard(Long studentId) {
         //학교랭킹 50위 레벨 및 경험치순으로 정렬
         Class studentClass = classRepository.findByStudentId(studentId).orElseThrow(() -> new CustomException(ErrorCode.NO_MATCH_USER_EXCEPTION));
-        List<Class> classes = classRepository.findAllByClassId(studentClass.getClassId());
+        List<Class> classes = classRepository.findAllByClassInfoId(studentClass.getClassInfoId());
         List<Long> ClassmemberIds = classes
                 .stream()
                 .filter(Objects::nonNull)

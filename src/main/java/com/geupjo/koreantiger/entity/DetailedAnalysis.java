@@ -7,10 +7,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Table(schema = "geupjo")
 @Entity
+@NoArgsConstructor
 public class DetailedAnalysis extends BaseEntity {
     @Min(0)
     @Max(100)
@@ -44,4 +46,14 @@ public class DetailedAnalysis extends BaseEntity {
 
     @Column(nullable = false)
     private long memberId;
+
+    public DetailedAnalysis(int grammar, int assignment, int algorithm, int recursive, int string, int total, long memberId) {
+        this.grammar = grammar;
+        this.assignment = assignment;
+        this.algorithm = algorithm;
+        this.recursive = recursive;
+        this.string = string;
+        this.total = total;
+        this.memberId = memberId;
+    }
 }

@@ -7,10 +7,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jdk.jfr.Description;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Table(schema = "geupjo")
 @Entity
+@NoArgsConstructor
 public class EducationHistory extends BaseEntity {
 
     @Column
@@ -38,6 +40,16 @@ public class EducationHistory extends BaseEntity {
 
     @Column(nullable = false)
     long memberId;
+
+    public EducationHistory(boolean attendance, long learningStart, long learningStop, long totalLearningTime, LearningTimeGrade learningTimeGrade, long baseDate, long memberId) {
+        this.attendance = attendance;
+        this.learningStart = learningStart;
+        this.learningStop = learningStop;
+        this.totalLearningTime = totalLearningTime;
+        this.learningTimeGrade = learningTimeGrade;
+        this.baseDate = baseDate;
+        this.memberId = memberId;
+    }
 
     public long getTotalLeaningTimeMin() {
         return TimeUtils.EpochMilliToMinutes(this.totalLearningTime);
