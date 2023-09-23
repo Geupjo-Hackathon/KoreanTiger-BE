@@ -23,4 +23,10 @@ public class Class {
     @Column(nullable = false)
     private long institutionId;
 
+    public Class(long studentId, long teacherId, long classInfoId, long institutionId) {
+        this.studentId = studentId;
+        this.teacherId = teacherId;
+        this.classInfoId = classInfoId;
+        this.institutionId = institutionId;
+    }
 }

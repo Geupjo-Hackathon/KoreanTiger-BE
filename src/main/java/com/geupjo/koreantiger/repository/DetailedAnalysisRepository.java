@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface DetailedAnalysisRepository extends JpaRepository<DetailedAnalysis, Long> {
-    Optional<DetailedAnalysis> findByMemberId(Long memberId);
+    Optional<DetailedAnalysis> findByMemberId(long memberId);
 }
