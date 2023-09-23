@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum LearningTimeGrade {
     NONE(0),
-    LOW(20),
-    MIDDLE(40),
-    HIGH(60),
-    VERY_HIGH(80);
+    LOW(1),
+    MIDDLE(2),
+    HIGH(3),
+    VERY_HIGH(4);
 
     private final long value;
 

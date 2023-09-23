@@ -1,6 +1,5 @@
 package com.geupjo.koreantiger.dto.response;
 
-import com.geupjo.koreantiger.enums.StudentProfileTitle;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "학생 프로필 응답DTO 입니다")
@@ -15,6 +14,6 @@ public record StudentProfileResponseDto(
         int connection,
 
         @Schema(description = "칭호 ex) 코드입문자")
-        StudentProfileTitle title
+        String title
 ) {
 }

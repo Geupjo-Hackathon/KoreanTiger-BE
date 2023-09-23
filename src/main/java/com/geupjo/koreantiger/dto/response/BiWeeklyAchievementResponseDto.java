@@ -14,16 +14,15 @@ public record BiWeeklyAchievementResponseDto(
         @Schema(description = "이번주 학습 이력")
         AchievementItem thisWeek,
 
-        @Schema(description = "메타 데이터")
-        Meta meta
-
+        @Schema(description = "날짜")
+        LocalDate date
 ) {
     public static BiWeeklyAchievementResponseDto of(Map<Integer, WeeklyAchievement> weeklyAchievement, TimeBox timeBox) {
         AchievementItem lastWeek = AchievementItem.of(weeklyAchievement.get(timeBox.lastWeekOfMonth()));
         AchievementItem thisWeek = AchievementItem.of(weeklyAchievement.get(timeBox.thisWeekOfMonth()));
-        Meta meta = Meta.of(lastWeek, thisWeek);
+        LocalDate date = LocalDate.now();
 
-        return new BiWeeklyAchievementResponseDto(lastWeek, thisWeek, meta);
+        return new BiWeeklyAchievementResponseDto(lastWeek, thisWeek, date);
     }
 
     private record AchievementItem(
@@ -42,28 +41,6 @@ public record BiWeeklyAchievementResponseDto(
                     weeklyAchievement.learningTime(),
                     weeklyAchievement.lectureCount()
             );
-        }
-    }
-
-    private record Meta(
-            @Schema(description = "날짜", example = "2021-10-10")
-            LocalDate date,
-            @Schema(description = "성취도", example = "1.5")
-            String achievementRate
-    ) {
-        private static Meta of(AchievementItem lastWeek, AchievementItem thisWeek) {
-            LocalDate date = LocalDate.now();
-            String achievementRate = calculateAchievementRate(lastWeek, thisWeek);
-            return new Meta(date, achievementRate);
-        }
-
-        private static String calculateAchievementRate(AchievementItem lastWeek, AchievementItem thisWeek) {
-            if (thisWeek.totalLearningTime == 0) {
-                return String.valueOf(0);
-            }
-            double rate = (double) thisWeek.totalLearningTime() / (double) lastWeek.totalLearningTime();
-
-            return String.format("%.1f", rate);
         }
     }
 }

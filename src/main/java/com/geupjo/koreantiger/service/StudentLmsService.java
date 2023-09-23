@@ -2,12 +2,14 @@ package com.geupjo.koreantiger.service;
 
 import com.geupjo.koreantiger.common.exception.CustomException;
 import com.geupjo.koreantiger.common.exception.ErrorCode;
+import com.geupjo.koreantiger.dto.BadgeDto;
 import com.geupjo.koreantiger.dto.StudentRankingDto;
 import com.geupjo.koreantiger.dto.TimeBox;
 import com.geupjo.koreantiger.dto.WeeklyAchievement;
 import com.geupjo.koreantiger.dto.response.*;
 import com.geupjo.koreantiger.entity.Class;
 import com.geupjo.koreantiger.entity.*;
+import com.geupjo.koreantiger.enums.Badge;
 import com.geupjo.koreantiger.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,41 +30,48 @@ public class StudentLmsService {
     private final LectureRepository lectureRepository;
     private final ClassRepository classRepository;
 
+    private final BadgeAchievedRepository badgeAchievedRepository;
+
     private static final int ONE_YEAR = 1;
 
-    public StudentProfileResponseDto getStudentProfile(Long studentId) {
-        Member student = memberRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorCode.NO_MATCH_USER_EXCEPTION));
+    public StudentProfileResponseDto getStudentProfile(Member student) {
         EducationProfile profile = educationProfileRepository.findByMemberId(student.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NO_MATCH_USER_EXCEPTION));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
         int connection = getContinuousConnection(student);
 
         return new StudentProfileResponseDto(
                 student.getName(),
                 profile.getExperience(),
                 connection,
-                profile.getStudentProfileTitle());
+                profile.getStudentProfileTitle().getTitleName());
     }
 
     //연속접속일자를 구하는 매서드입니다
     private int getContinuousConnection(Member student) {
         EducationHistory lastHistory = educationHistoryRepository.findFirstByMemberIdAndAttendanceIsFalseOrderByCreatedAt(student.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NO_MATCH_USER_EXCEPTION));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
         long currentTime = System.currentTimeMillis();
-        long lastConnection = lastHistory.getLearningStop();
-        long duration = currentTime - lastConnection / (1000 * 60 * 60 * 24);
+        long lastConnection = lastHistory.getBaseDate();
+        long duration = (currentTime - lastConnection) / (1000 * 60 * 60 * 24);
         return (int) duration;
     }
 
-    public RankingBoardResponseDto getRankingBoard(Long studentId) {
+    public RankingBoardResponseDto getRankingBoard(Member student) {
         //학교랭킹 50위 레벨 및 경험치순으로 정렬
-        Class studentClass = classRepository.findByStudentId(studentId).orElseThrow(() -> new CustomException(ErrorCode.NO_MATCH_USER_EXCEPTION));
+        Class studentClass = classRepository.findByStudentId(student.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NO_MATCH_USER_EXCEPTION));
+
         List<Class> classes = classRepository.findAllByClassInfoId(studentClass.getClassInfoId());
-        List<Long> ClassmemberIds = classes
+
+        List<Long> classMemberIds = classes
                 .stream()
                 .filter(Objects::nonNull)
                 .map(Class::getStudentId)
                 .toList();
-        List<EducationProfile> inSchoolProfiles = educationProfileRepository.findTop50ByMemberIdInOrderByLevelDescExperienceDesc(ClassmemberIds);
+
+        List<EducationProfile> inSchoolProfiles = educationProfileRepository.findTop50ByMemberIdInOrderByLevelDescExperienceDesc(classMemberIds);
         ArrayList<StudentRankingDto> inSchoolRankingBoard = new ArrayList<>();
         getRanking50(inSchoolProfiles, inSchoolRankingBoard);
 
@@ -79,30 +88,31 @@ public class StudentLmsService {
                 .filter(Objects::nonNull)
                 .map(EducationProfile::getMemberId)
                 .toList();
-        List<Member> RankingMembers = memberRepository.findByIdIn(memberIds);
+        List<Member> rankingMembers = memberRepository.findByIdIn(memberIds);
 
         int totalRank = 1;
         int index = 0;
         for (EducationProfile eachProfile : educationProfiles) {
             StudentRankingDto dto = new StudentRankingDto(
                     totalRank,
-                    RankingMembers.get(index).getName(),
+                    rankingMembers.get(index).getName(),
                     eachProfile.getLevel(),
                     eachProfile.getProgress()
             );
             RankingBoard.add(dto);
             totalRank++;
+            index++;
         }
     }
 
     public StudentHistoryResponseDto getStudentEducationHistories(Member currentStudent) {
         LocalDateTime today = LocalDateTime.now();
-        LocalDateTime oneYearBeforeToday = today.minusYears(ONE_YEAR);
+        LocalDateTime oneMonthBeforeToday = today.minusMonths(ONE_YEAR);
 
         List<EducationHistory> histories = educationHistoryRepository
-                .findByMemberIdAndCreatedAtBetween(currentStudent.getId(), oneYearBeforeToday, today);
+                .findByMemberIdAndCreatedAtBetween(currentStudent.getId(), oneMonthBeforeToday, today);
         List<Lecture> lectures = lectureRepository
-                .findByMemberIdAndCreatedAtBetween(currentStudent.getId(), oneYearBeforeToday, today);
+                .findByMemberIdAndCreatedAtBetween(currentStudent.getId(), oneMonthBeforeToday, today);
 
         return StudentHistoryResponseDto.of(histories, lectures);
     }
@@ -166,5 +176,15 @@ public class StudentLmsService {
                     return WeeklyAchievement.of(histories, lectures, key);
                 })
                 .collect(Collectors.toMap(WeeklyAchievement::weekOfMonth, Function.identity()));
+    }
+
+    public BadgeAchievedDto getBadgeAchievement(Member currentStudent) {
+        List<BadgeAchieved> badgeAchieved = badgeAchievedRepository.findAllByMemberId(currentStudent.getId());
+        ArrayList<BadgeDto> badges = new ArrayList<>();
+        for (BadgeAchieved badgeEarned : badgeAchieved) {
+            Badge badge = badgeEarned.getBadge();
+            badges.add(new BadgeDto(badge, badge.getBadgeName(), badge.getDescription(), badgeEarned.getCreatedAt()));
+        }
+        return new BadgeAchievedDto(badges);
     }
 }
