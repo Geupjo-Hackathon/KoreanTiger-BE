@@ -3,6 +3,7 @@ package com.geupjo.koreantiger;
 import com.geupjo.koreantiger.entity.Class;
 import com.geupjo.koreantiger.entity.*;
 import com.geupjo.koreantiger.enums.Authority;
+import com.geupjo.koreantiger.enums.Badge;
 import com.geupjo.koreantiger.enums.LearningTimeGrade;
 import com.geupjo.koreantiger.enums.StudentProfileTitle;
 import com.geupjo.koreantiger.repository.*;
@@ -47,6 +48,8 @@ class MockDataJobTest {
     private DetailedAnalysisRepository detailedAnalysisRepository;
     @Autowired
     private CodeBoxRepository codeBoxRepository;
+    @Autowired
+    private BadgeAchievedRepository badgeAchievedRepository;
 
     @Test
     @Commit
@@ -130,6 +133,21 @@ class MockDataJobTest {
             Class studentClass = new Class(student.getId(), 198L, 1L, 3L);
             classRepository.save(studentClass);
         });
+    }
+
+    @Test
+    @Commit
+    void mockBadgeAchievedJob() {
+        List<BadgeAchieved> badgeAchieveds = List.of(
+                new BadgeAchieved(Badge.PERFECTATTENDANCE, 268L),
+                new BadgeAchieved(Badge.GRAMMARMASTER, 268L),
+                new BadgeAchieved(Badge.HUGEGROUWH, 268L),
+                new BadgeAchieved(Badge.ASSIGNMENTKING, 268L),
+                new BadgeAchieved(Badge.OUTSTANDING, 268L)
+        );
+
+        List<BadgeAchieved> saved = badgeAchievedRepository.saveAll(badgeAchieveds);
+        System.out.println(saved.size());
     }
 
     @Test
